@@ -11,13 +11,13 @@ def get_villager_lookup(database) -> dict:
         for name, row in database.iterrows():
                 villager_lookup[name] = {}
                 for item in row['Specific Loved Gifts']:
-                        villager_lookup[name][item] = 3
+                        villager_lookup[name][item] = 5
                 for item in row['Specific Liked Gifts']:
-                        villager_lookup[name][item] = 1
+                        villager_lookup[name][item] = 3
                 for item in row['Specific Disliked Gifts']:
-                        villager_lookup[name][item] = -1
+                        villager_lookup[name][item] = -0.5
                 for item in row['Specific Hated Gifts']:
-                        villager_lookup[name][item] = -3
+                        villager_lookup[name][item] = -1
                 for item in row['Loved Movies']:
                         villager_lookup[name][item] = 1
 
@@ -86,7 +86,7 @@ def get_choices() -> list:
                 ]
         }
 
-        category_cap = [10, 10, 5, 6, 20, 5, 5, 2, 5]
+        category_cap = [15, 13, 7, 7, 25, 8, 5, 2, 7]
         count = 0
         random_choices = []
         flat_list = []
@@ -96,7 +96,7 @@ def get_choices() -> list:
                 count += 1
                 flat_list.extend(gift_categories[category])
 
-        random_choices.extend(random.sample(sorted(set(flat_list) - set(random_choices)),32))
+        random_choices.extend(random.sample(sorted(set(flat_list) - set(random_choices)),36))
 
         random.shuffle(random_choices)
         chunk_size = 5
