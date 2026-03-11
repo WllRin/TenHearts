@@ -1,14 +1,11 @@
 import pandas as pd
 import random
 
-# loading / importing pkl file
-villagers_db = pd.read_pickle('data/villagers_clean.pkl')
-
 def get_villager_lookup(database) -> dict:
         """
         To convert the items in the gift columns into a dictionary to have a numerical value to be used for the scoring
         :param database: DataFrame imported from the notebook. It should contain all the data values of each villager
-        :return: A dictionary for each item in a villagers_db gifts columns has numerical value
+        :return: A dictionary for each item in a database columns to have numerical value
         """
         villager_lookup = {}
         for name, row in database.iterrows():
@@ -29,7 +26,7 @@ def get_villager_lookup(database) -> dict:
 def get_choices() -> list:
         """
         Converting dictionaries into a master list
-        :return: a list containing random choices chosen through stratified and true random sampling
+        :return: A list containing random choices chosen through stratified and true random sampling
         """
         gift_categories = {
                 "Gems & Minerals": [
@@ -107,10 +104,10 @@ def get_choices() -> list:
 
         return random_choices
 
-def run_quiz() -> list:
+def run_quiz(database) -> list:
         """"
         Runs the quiz that containts a 4 introduction quiz and 15 multiple choice of pick your favorite.
-        :return: a list that should contain 2 list inside. One for the introduction questions, and the one for the multiple choice one.
+        :return: A list that contain answers to the introduction questions, and the multiple choice one.
         """
         all_answers = []
         intro_answers = []
@@ -133,16 +130,17 @@ def run_quiz() -> list:
                 except ValueError:
                         print('Invalid input.')
 
+        interest_choices = database['Interest'].tolist()
         while True:
-                print(f"From from the following.\n{villagers_db['Interest'].tolist()}")
+                print(f"From the following.\n{interest_choices}")
                 answer = input("What is your interest: ")
-                if answer.capitalize() in villagers_db['Interest'].tolist():
+                if answer.capitalize() in interest_choices:
                         intro_answers.append(answer.capitalize())
                         break
 
                 else:
                         print("Choose only among the following choices: ")
-                        print(villagers_db['Interest'].tolist())
+                        print(interest_choices)
 
         # referece for chocies for movie genres
         movie_genres = {
@@ -176,7 +174,7 @@ def run_quiz() -> list:
                                 print(choices)
                                 answer = int(input("Choose from the following. Answer in 1-5: "))
                                 if answer >= 1 and answer <= 5:
-                                        mul_answers.append(answer)
+                                        mul_answers.append(choices[answer-1])
                                         break
                                 else:
                                         print("Choose from the following range. (1-5)")
@@ -190,21 +188,35 @@ def run_quiz() -> list:
 
 def calculate_scores(answers: list, villagers_lookup:dict) -> dict:
         """
-                desc here: yoko na
-        :param answers:
-        :param villagers_lookup:
-        :return:
+        Calculating the scores for the answers with the use of the villager_lookup function.
+        :param answers: all_answers from the run_quiz function.
+        :param villagers_lookup: The dictionary used to determine scores for each item in a villager's gifts' column
+        :return: A dictionary that has scores for each key (villager name) and value (score)
         """
-        pass
+        all_villager_score = []
+        for villager in villagers_lookup:
+                score = 0
+                for item in answers[1]:
+                        if item in villagers_lookup[villager]:
+                                score += villagers_lookup[villager][item]
+
+                all_villager_score.append(score)
+
+        print(all_villager_score)
 
 def show_results(scores) -> str:
         """"
+        Showing the results, with the most compatible villager is rank 1.
         :param scores:
         """
-        pass
 
 def main() -> None:
-        run_quiz()
+        # loading / importing pkl file
+        villagers_db = pd.read_pickle('data/villagers_clean.pkl')
+        user_answers = run_quiz(villagers_db)
+        villager_lookup = get_villager_lookup(villagers_db)
+
+        calculate_scores(user_answers, villager_lookup)
 
 if __name__ == '__main__':
     main()
