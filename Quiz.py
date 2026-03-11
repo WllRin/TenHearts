@@ -21,9 +21,9 @@ def get_villager_lookup(database) -> dict:
                 for item in row['Loved Movies']:
                         villager_lookup[name][item] = 1
 
-                villager_lookup[name][row['Birthday Season']] = 5
-                villager_lookup[name][row['Birthday Day']] = 5
-                villager_lookup[name][row['Interest']] = 5
+                villager_lookup[name][row['Birthday Season']] = 3
+                villager_lookup[name][row['Birthday Day']] = 2
+                villager_lookup[name][row['Interest']] = 4
 
         return villager_lookup
 
@@ -125,7 +125,7 @@ def run_quiz(database) -> list:
         while True:
                 try:
                         answer = int(input("What is your favorite day of the month. (1-28): "))
-                        if answer >= 1 and answer <= 28:
+                        if 1 <= answer <= 28:
                                 all_answers.append(answer)
                                 break
                         else:
@@ -174,7 +174,7 @@ def run_quiz(database) -> list:
                         try:
                                 print(choices)
                                 answer = int(input("Choose from the following. Answer in 1-5: "))
-                                if answer >= 1 and answer <= 5:
+                                if 1 <= answer <= 5:
                                         all_answers.append(choices[answer-1])
                                         break
                                 else:
@@ -203,7 +203,7 @@ def calculate_scores(answers: list, villagers_lookup:dict) -> dict:
 
                 all_villager_score.append(score)
 
-        print(all_villager_score)
+        return all_villager_score
 
 def show_results(scores) -> str:
         """"
@@ -216,8 +216,8 @@ def main() -> None:
         villagers_db = pd.read_pickle('data/villagers_clean.pkl')
         user_answers = run_quiz(villagers_db)
         villager_lookup = get_villager_lookup(villagers_db)
-
-        calculate_scores(user_answers, villager_lookup)
+        scores = calculate_scores(user_answers, villager_lookup)
+        show_results(scores)
 
 if __name__ == '__main__':
     main()
