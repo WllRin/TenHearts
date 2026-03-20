@@ -1,5 +1,5 @@
 # TenHearts ❤
-________________
+
 ## A Stardew Valley villager compatibility quiz.
 Taking inspiration from buzzfeed questions, take a quiz to find out the most compatible bachelor or bachelorette for you!
 
